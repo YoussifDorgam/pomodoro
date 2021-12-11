@@ -2,6 +2,8 @@ import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:flutter/material.dart';
 import 'package:ndialog/ndialog.dart';
 import 'package:pomodoro/utils/constants.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
+import 'package:sleek_circular_slider/sleek_circular_slider.dart';
 
 import 'countdown_timer.dart';
 
@@ -28,10 +30,14 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final CountDownController _clockController = CountDownController();
   Icon _clockButton = kPlayClockButton; // Initial value
-  bool _isClockStarted = false; // Conditional flag
+  bool _isClockStarted = false;
+  double slider = 1.0;
+  bool isvoice = false ;
+  int gift = 10;
+
 
   // Change Clock button icon and controller
-  void switchClockActionButton() {
+  Future<void> switchClockActionButton() async {
     if (_clockButton == kPlayClockButton) {
       _clockButton = kPauseClockButton;
       if (!_isClockStarted) {
@@ -48,117 +54,159 @@ class _HomePageState extends State<HomePage> {
       _clockController.pause();
     }
   }
-
   @override
   Widget build(BuildContext context) {
-    // Half Screen Dimensions
-    final double height = MediaQuery.of(context).size.height / 2;
-    final double width = MediaQuery.of(context).size.width / 2;
     int indexTimesCompleted = 0;
-
+    var slidEr = SleekCircularSlider(
+        appearance: const CircularSliderAppearance(),
+        initialValue: 10.0,
+        min: 10,
+        max: 120,
+        innerWidget: (value) {
+          return Center(child: Text(
+              '${slider.round()} m',
+              style: const TextStyle(fontSize: 30.0),
+            ),
+          ); // return const Align(alignment:Alignment.center,child: Text('Time'));
+        },
+        onChange: (double value) {
+          setState(() {
+            slider = value;
+          });
+          print(value);
+        });
     CountDownTimer _countDownTimer = CountDownTimer(
-      duration: kWorkDuration,
-      fillColor: Colors.pink,
+      duration: slider.round(),
+      fillColor: const Color(0xFF22292F),
       onComplete: () {
         setState(() async {
           widget.timesCompleted[indexTimesCompleted] = const Icon(
             Icons.brightness_1_rounded,
-            color: Colors.pink,
+            color: Color(0xFF22292F),
             size: 5.0,
           );
           indexTimesCompleted++;
           await NDialog(
             dialogStyle: DialogStyle(titleDivider: true),
-            title: Text("Timer Completed"),
-            content: Text("Time to break."),
+            title: const Text("Timer Completed"),
+            content: const Text("Time to break."),
             actions: <Widget>[
               ElevatedButton(
                   style: ButtonStyle(
                     backgroundColor: MaterialStateColor.resolveWith(
                         (states) => Colors.green),
                   ),
-                  child: Text("Start a short break"),
+                  child: const Text("Start a short break"),
                   onPressed: () {}),
             ],
           ).show(context);
         });
       },
     );
-
     CircularCountDownTimer clock = CircularCountDownTimer(
       controller: _clockController,
       isReverseAnimation: true,
-      ringColor: const Color(0xff0B0C19),
-      height: height,
-      width: width,
+      ringColor: const Color(0xFF22292F),
+      height: 100,
+      width: double.infinity,
       autoStart: false,
       duration: _countDownTimer.duration! * 60,
       isReverse: true,
-      textStyle: const TextStyle(color: Colors.white),
+      textStyle: const TextStyle(color: Colors.white, fontSize: 20),
       fillColor: _countDownTimer.fillColor!,
-      backgroundColor: const Color(0xFF2A2B4D),
+      backgroundColor: const Color(0xFF22292F),
       strokeCap: StrokeCap.round,
-      onComplete: () => _countDownTimer.onComplete,
-    );
-
-    return Scaffold(
-      appBar: AppBar(
-        elevation: 0.0,
-        leading: IconButton(
-          onPressed: () {},
-          icon: Icon(Icons.headset_off),
-        ),
-        title: Text('Pomodoro'),
-        centerTitle: true,
-        actions: [
-          IconButton(
-            onPressed: () {},
-            icon: Icon(Icons.alarm_off),
-          ),
-        ],
-      ),
-      body: Container(
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            children: <Widget>[
-              Center(
-                child: clock,
-              ),
-              Text(
-                kWorkLabel,
-                style: TextStyle(
-                  color: Colors.white,
-                ),
-              ),
-              SizedBox(
-                height: 10.0,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: widget.timesCompleted,
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 20.0),
-                child: GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      switchClockActionButton();
-                    });
-                  },
-                  child: Container(
-                    width: width / 2.5,
-                    height: height / 8,
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).cardColor,
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    child: _clockButton,
+      onComplete: () {
+        Alert(
+                context: context,
+                title: 'Done',
+                style: const AlertStyle(
+                  isCloseButton: true,
+                  isButtonVisible: false,
+                  titleStyle: TextStyle(
+                    color: Colors.white,
+                    fontSize: 30.0,
                   ),
                 ),
-              ),
-            ],
-          ),
+                type: AlertType.success)
+            .show()
+            .then((value) {
+          setState(() {
+            gift++;
+          });
+        });
+      },
+    );
+    return Scaffold(
+      body: SafeArea(
+        child: Stack(
+          children: [
+            Image.asset('assets/snaw.gif',fit: BoxFit.cover,),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const SizedBox(
+                  height: 20.0,
+                ),
+                Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsetsDirectional.only(start: 20.0),
+                      child: isvoice==false ? IconButton(
+                          onPressed: () {
+
+                          },
+                          icon: const Icon(
+                            Icons.headset_off,
+                            size: 30,
+                          )) : IconButton(
+                          onPressed: () {
+
+                          },
+                          icon: const Icon(
+                            Icons.headset,
+                            size: 30,
+                          )),
+                    ),
+                    const Spacer(),
+                    Padding(
+                      padding: const EdgeInsetsDirectional.only(end: 20.0),
+                      child: Text(
+                        '⭐ $gift',
+                        style: TextStyle(fontSize: 20.0),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 80.0,),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 30),
+                  child: slidEr,
+                ),
+                clock,
+                const SizedBox(
+                  height: 10.0,
+                ),
+                Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20.0),
+                      color: Colors.white,
+                    ),
+                    child: TextButton(
+                        onPressed: () {
+                          if (_isClockStarted == false) {
+                            switchClockActionButton();
+                          } else {
+                            _clockController.start();
+                          }
+                        },
+                        child: const Text(
+                          'Start !',
+                          style: TextStyle(fontSize: 20.0, color: Colors.black),
+                        ))),
+              ],
+            ),
+          ],
         ),
       ),
     );

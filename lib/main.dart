@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:pomodoro/utils/myapp.dart';
-import 'package:pomodoro/utils/test.dart';
 import 'home_page.dart';
 
 void main() => runApp(Pomodoro());
@@ -12,11 +10,11 @@ class Pomodoro extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         brightness: Brightness.dark,
-        scaffoldBackgroundColor: const Color(0xFF2A2B4D),
-        primaryColor: const Color(0xFF2A2B4D),
+        scaffoldBackgroundColor: const Color(0xFF22292F),
+        primaryColor: const Color(0xFF22292F),
         fontFamily: 'Quicksand-Variable',
       ),
-      home:  MyHome(),
+      home:HomePage(),
     );
   }
 }
