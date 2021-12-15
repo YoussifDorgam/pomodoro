@@ -39,6 +39,12 @@ dependencies:
   rflutter_alert: ^2.0.4
   flutter_neumorphic_null_safety: ^3.2.4
   sleek_circular_slider: ^2.0.1
+  bloc: ^7.2.0
+  flutter_bloc: ^7.3.0
+  audioplayers: ^0.20.1
+  shared_preferences: ^2.0.9
+
+
 
 
 
@@ -71,7 +77,9 @@ flutter:
       fonts:
         - asset: assets/fonts/Quicksand-VariableFont_wght.ttf
         - asset: assets/snaw.gif
-        - asset: assets/test.gif
+        - asset: assets/audio/lol.mp3
+        - asset: assets/audio/appmusic.mp3
+
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

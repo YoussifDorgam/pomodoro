@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:pomodoro/sharedprefrance/cash_helper.dart';
 import 'home_page.dart';
 
-void main() => runApp(Pomodoro());
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await cachHelper.init();
+  runApp(Pomodoro());
+}
 
 class Pomodoro extends StatelessWidget {
+  // final bool? isdark ;
+  // Pomodoro(this.isdark);
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
